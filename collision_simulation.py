@@ -77,7 +77,6 @@ interval = 1 / FPS
 circles = [Circle((random.randint(0, width-1-(RADIUS*2)), random.randint(0, height-1-(RADIUS*2)))) for _ in range(MAX_CIRCLES)]
 
 
-
 # Update loop.
 while running:
 
@@ -88,12 +87,13 @@ while running:
             running = False
             break
 
-        # Quit on escape pressed.
+        # Key pressed events.
         elif event.type == pygame.KEYDOWN:
+            # Quit on escape pressed.
             if event.key == pygame.K_ESCAPE:
                 running = False
                 break
-
+            # Pause on space pressed.
             if event.key == pygame.K_SPACE:
                 paused = not paused
     
@@ -101,9 +101,8 @@ while running:
     current = time.time()
     if current < next_frame:
         continue
-    
     next_frame += interval
-    
+    # Always render the circles.
     screen.fill(BG_COLOR)
     
     # Render all the circles.
@@ -121,7 +120,8 @@ while running:
         v_x, v_y = circle.velocity
         p_x, p_y = circle.position
 
-        # Check bounds.
+        # Check screen bounds.
+        # Sides of the screen.
         if 0 <= p_x + v_x <= width - 1 - RADIUS*2:
             p_x += v_x
         # Bound off side.
@@ -132,7 +132,8 @@ while running:
                 p_x = -v_x - p_x
             else:
                 p_x = width - 1 - v_x - (width - p_x - 1)
-            
+                
+        # Top and bottom of the screen.
         if 0 <= p_y + v_y <= height - 1 - RADIUS*2:
             p_y += v_y
         # Bound off top/bottom.
@@ -146,7 +147,6 @@ while running:
 
         circle.position = (p_x, p_y)
 ##        circle.slow()
-    
 
 pygame.quit()
         
