@@ -56,9 +56,9 @@ class Circle():
     def slow(self):
         """Reduces the magnitude of the velocity of the circle based on
         the resistance modifier."""
-        mag = math.sqrt((self.velocity[0]**2) + (self.velocity[1]**2)) * RESISTANCE
+        self.speed = math.sqrt((self.velocity[0]**2) + (self.velocity[1]**2)) * RESISTANCE
         angle = math.atan2(self.velocity[1], self.velocity[0])
-        self.velocity = to_velocity(angle, mag)
+        self.velocity = to_velocity(angle, self.speed)
 
     
 # Initialise screen.
