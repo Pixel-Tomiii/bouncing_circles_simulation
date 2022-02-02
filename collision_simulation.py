@@ -6,11 +6,11 @@ import random
 CIRCLE_COLOR = (255, 0, 0)
 BG_COLOR = (0, 0, 0)
 FPS = 60
-RADIUS = 40
-MIN_SPEED = 4
-MAX_SPEED = 30
-MAX_CIRCLES = 200
-RESISTANCE = 0.85
+RADIUS = 2
+MIN_SPEED = 5
+MAX_SPEED = 10
+MAX_CIRCLES = 4000
+RESISTANCE = 1
 
 
 def to_velocity(angle, speed):
@@ -35,10 +35,12 @@ def add_vector(vect1, vect2):
 class Circle():
     def __init__(self, position):
         self.position = position
-        self.speed = random.randint(MIN_SPEED, MAX_SPEED)
+        self.radius = random.choice([0, 0, 0, 1, 1, 2, 2, 3])
+        self.speed = random.randint(MIN_SPEED, MAX_SPEED) * (1 / ((self.radius + 1) ** 2))
         self.velocity = to_velocity(math.pi * (random.random() + random.random()), self.speed)
-        self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-##        self.color = (255, 255, 255)
+##        self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.color = (255, 255, 255)
+        
         
     def get_center(self):
         """Returns a tuple representing the coordinates of the centre of
@@ -72,6 +74,7 @@ height = screen.get_height()
 running = True
 paused = True
 next_frame = time.time()
+next_second = time.time()
 interval = 1 / FPS
 
 circles = [Circle((random.randint(0, width-1-(RADIUS*2)), random.randint(0, height-1-(RADIUS*2)))) for _ in range(MAX_CIRCLES)]
@@ -98,7 +101,7 @@ while running:
                 paused = not paused
     
     # Check for a frame update.
-    current = time.time()
+    current = time.time()        
     if current < next_frame:
         continue
     next_frame += interval
@@ -107,7 +110,7 @@ while running:
     
     # Render all the circles.
     for circle in circles:
-        pygame.draw.circle(screen, circle.color, circle.get_center(), RADIUS)
+        pygame.draw.circle(screen, circle.color, circle.get_center(), circle.radius)
 
     pygame.display.update()
 
@@ -120,9 +123,10 @@ while running:
         v_x, v_y = circle.velocity
         p_x, p_y = circle.position
 
+
         # Check screen bounds.
         # Sides of the screen.
-        if 0 <= p_x + v_x <= width - 1 - RADIUS*2:
+        if 0 <= p_x + v_x <= width - 1 - circle.radius*2:
             p_x += v_x
         # Bound off side.
         else:
@@ -134,7 +138,7 @@ while running:
                 p_x = width - 1 - v_x - (width - p_x - 1)
                 
         # Top and bottom of the screen.
-        if 0 <= p_y + v_y <= height - 1 - RADIUS*2:
+        if 0 <= p_y + v_y <= height - 1 - circle.radius*2:
             p_y += v_y
         # Bound off top/bottom.
         else:
@@ -147,6 +151,6 @@ while running:
 
         circle.position = (p_x, p_y)
 ##        circle.slow()
+    
 
 pygame.quit()
-        
